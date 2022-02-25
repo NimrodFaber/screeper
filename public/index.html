@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" data-role="name" placeholder="name">
+    <input type="text" data-role="url" placeholder="url">
+    <input type="text" data-role="selector" placeholder="selector">
+    <button data-role="send">send</button>
+<br><br><br>
+ <h1>show site</h1>
+       <label>site
+            <select data-role="site">
+                <option disabled="disabled" >loading data</option>
+            </select>
+        </label>
+
+        <button data-role="screp">get title</button>
+
+        <div data-role="text"></div>
+    <script>
+        $('[data-role="send"]').click(function(){
+            let name= $('[data-role="name"]').val(),
+            url=$('[data-role="url"]').val(),
+            selector=$('[data-role="selector"]').val();
+
+         $.post("/site", { name, url,selector}, (data) => {
+        console.log(data);
+        getSiteTOSelect()
+      });
+    });
+        
+
+    function popoleteSite(elemen,data){
+        elemen.html("");
+       
+        $.each( data,function(_,site){
+            let option=$("<option>");
+                    option.text(site.name);
+        option.attr("value",site._id);
+        elemen.append(option)
+        })
+
+    }
+
+ 
+
+    function getSiteTOSelect(){
+
+            $.get("/site",(response)=>{
+           const select = $('[data-role="site"]');
+           popoleteSite(select, response.site);
+        })
+        
+
+    }
+    $('[data-role="site"]').change(function(){
+        console.log($(this).val());
+    })
+
+  $('[data-role="screp"]').click(function(){
+       let id=$('[data-role="site"]').val()
+          $.get("/site/scrape/"+id,(response)=>{
+              
+         console.log(response);
+        })})
+
+
+$('[data-role="screp"]').click(function(){
+    let id=$('[data-role="site"]').val()
+      $.get("/site/scrape/"+id,(response)=>{
+           const div = $('[data-role="text"]');
+           div.text(`${response.site}`)
+             $.post("/site", { name, url,selector}, (data) => {
+        console.log(data);
+        getSiteTOSelect()
+      });
+    });
+        })
+  
+
+
+       
+        
+    </script>
+</body>
+</html>
