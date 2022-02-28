@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
 router.get("/scrape/:id", (req, res) => {
   getbyid(req.params.id)
     .then((site) => res.json({ site }))
-    .catch((err) => console.log(err));
+    .catch((error) => res.json(error));
 });
 
 module.exports = router;

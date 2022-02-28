@@ -21,10 +21,11 @@ const getbyid = (_id) => {
   return new Promise((resolve, rejrct) => {
     Site.findById(_id)
       .then((site) => {
-        exiostitle(site._doc.url, site._doc.selector).then((title) => {
-          resolve(title);
-        });
-        /*  exiostitle(site._doc.url) */
+        exiostitle(site._doc.url, site._doc.selector)
+          .then((title) => {
+            resolve(title);
+          })
+          .catch((error) => rejrct(error));
       })
       .catch((err) => rejrct(err));
   });
@@ -36,9 +37,13 @@ function exiostitle(site, selector) {
       .get(`${site}`)
       .then(function (response) {
         let html = parse(response.data);
-        resolve(html.querySelector(`${selector}`).text);
+        if (html.querySelector(`${selector}`)) {
+          resolve(html.querySelector(`${selector}`).text);
+        } else {
+          reject({ error: "failed" });
+        }
       })
-      .catch((err) => reject(err));
+      .catch((error) => reject(error));
   });
 }
 

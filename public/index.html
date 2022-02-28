@@ -20,6 +20,7 @@
         </label>
 
         <button data-role="screp">get title</button>
+        <button data-role="savescreped">save</button>
 
         <div data-role="text"></div>
     <script>
@@ -75,16 +76,21 @@ $('[data-role="screp"]').click(function(){
       $.get("/site/scrape/"+id,(response)=>{
            const div = $('[data-role="text"]');
            div.text(`${response.site}`)
-             $.post("/site", { name, url,selector}, (data) => {
-        console.log(data);
-        getSiteTOSelect()
-      });
+           div.text(`${response.error}`)
+      
     });
         })
   
 
 
-       
+        $('[data-role="savescreped"]').click(function(){
+             let id=$('[data-role="site"]').val();
+            let screped= $('[data-role="text"]').text()
+      $.post("/scraped", { id, screped}, (data) => {
+        console.log(data); 
+      
+        }); 
+        })
         
     </script>
 </body>
